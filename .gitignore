@@ -1,0 +1,5 @@
+# Built GameBoy Files
+*.exe
+*.gb
+*.bat
+.vs\
