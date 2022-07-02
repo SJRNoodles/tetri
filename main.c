@@ -63,6 +63,7 @@ int holdEnabled = 1;
 int pieceStore = 0;
 int randomizer = 0;
 int addGarbage = 0;
+int selection = 0;
 
 const char blankmap[1] = {0x00};
 const char tetris_block[1] = {0x01};
@@ -375,7 +376,20 @@ void resetGame(){
 	}
 	tD = 0;
 	
-	set_bkg_data(0,40,tetris);
+	if (selection == 0) {addGarbage = 0;}
+	if (selection == 1) {addGarbage = 1;}
+	
+	if (addGarbage == 1) {
+		i = 0;
+		for (i = 0; i < 60; i+=1){
+			gameGrid[180 - i] = rand() % 2;
+			if (gameGrid[180 - i] !=1) {
+				gameGrid[180 - i] = 0;
+			}
+		}
+	}
+	
+	set_bkg_data(0,48,tetris);
 	set_bkg_tiles(0,0,20,18,tetris_map);
 	
 	initrand(DIV_REG);
@@ -488,7 +502,7 @@ void main(){
 	NR50_REG = 0x77; // sets the volume for both left and right channel just set to max 0x77
 	NR51_REG = 0xFF; // is 1111 1111 in binary, select which chanels we want to use in this case all of them. One bit for the L one bit for the R of all four channels
 	
-	set_sprite_data(0,14,tetris);
+	set_sprite_data(0,48,tetris);
 	
 	SHOW_BKG;
 	SHOW_SPRITES;
@@ -511,6 +525,9 @@ void main(){
 	set_sprite_tile(11,1);
 	set_sprite_tile(12,1);
 	
+	// selection
+	set_sprite_tile(13,23);
+	
 	initrand(DIV_REG);
 	
 	updateBoard();
@@ -520,24 +537,41 @@ void main(){
 			set_bkg_tiles(0,0,20,18,tetri_logo_map);
 			if (joypad()){
 				gaming = 0;
+				move_sprite(13,6 * 8,10*8);
 			}
 		}
 		if (gaming == 0) {
-			set_bkg_data(0,40,tetris);
+			
+			move_sprite(1,-16,16);
+			move_sprite(2,-16,16);
+			move_sprite(3,-16,16);
+			move_sprite(4,-16,16);
+			move_sprite(5,-16,16);
+			move_sprite(6,-16,16);
+			move_sprite(7,-16,16);
+			move_sprite(8,-16,16);
+			move_sprite(9,-16,16);
+			move_sprite(10,-16,16);
+			move_sprite(11,-16,16);
+			move_sprite(12,-16,16);
+			
+			set_bkg_data(0,48,tetris);
 			set_bkg_tiles(0,0,20,18,tetris_menu);
+			if (joypad() == J_UP) {
+				selection = 0;
+				move_sprite(13,6 * 8,10*8);
+			}
+			if (joypad() == J_DOWN) {
+				selection = 1;
+				move_sprite(13,6 * 8,16*8);
+			}
 			if (joypad() == J_A) {
 				initrand(DIV_REG);
 				resetGame();
 				set_bkg_tiles(0,0,20,18,tetris_map);
-				if (addGarbage == 1) {
-					i = 0;
-					for (i = 0; i < 90; i+=1){
-						gameGrid[180 - i] = rand() % 2;
-						if (gameGrid[180 - i] !=1) {
-							gameGrid[180 - i] = 0;
-						}
-					}
-				}
+				
+				move_sprite(13,-16,16);
+			
 				updateBoard();
 				gaming = 1;
 			}
@@ -718,6 +752,10 @@ void main(){
 						tDir = 1;
 					}
 				}
+			}
+			
+			if (joypad() == J_START) {
+				gaming = 0;
 			}
 			
 			tick+=1;
