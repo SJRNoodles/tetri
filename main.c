@@ -3,9 +3,12 @@
 #include <rand.h>
 
 #include "tetris_tiles.c"
+#include "tetris_menu.c"
 #include "tetris_map.c"
+#include "tetri_logo_data.c"
+#include "tetri_logo_map.c"
 
-int gaming = 1;
+int gaming = 2;
 
 // draw the tetramino
 int txOffset1 = 0;
@@ -58,6 +61,8 @@ int hardDrop = 0;
 int holding = 0;
 int holdEnabled = 1;
 int pieceStore = 0;
+int randomizer = 0;
+int addGarbage = 0;
 
 const char blankmap[1] = {0x00};
 const char tetris_block[1] = {0x01};
@@ -272,10 +277,10 @@ void randomMino(int hold){
 		txOffset3 = 1;
 		txOffset4 = 2;
 
-		tyOffset1 = 1;
-		tyOffset2 = 1;
-		tyOffset3 = 1;
-		tyOffset4 = 1;
+		tyOffset1 = 0;
+		tyOffset2 = 0;
+		tyOffset3 = 0;
+		tyOffset4 = 0;
 	}
 	if (piece == 4){
 		// o
@@ -369,6 +374,11 @@ void resetGame(){
 		gameGrid[i] = 0;
 	}
 	tD = 0;
+	
+	set_bkg_data(0,40,tetris);
+	set_bkg_tiles(0,0,20,18,tetris_map);
+	
+	initrand(DIV_REG);
 
 	// tetramino player controlled things
 	tx = 6;
@@ -478,16 +488,11 @@ void main(){
 	NR50_REG = 0x77; // sets the volume for both left and right channel just set to max 0x77
 	NR51_REG = 0xFF; // is 1111 1111 in binary, select which chanels we want to use in this case all of them. One bit for the L one bit for the R of all four channels
 	
-	set_bkg_data(0,23,tetris);
-	set_bkg_tiles(0,0,20,18,tetris_map);
-	
 	set_sprite_data(0,14,tetris);
 	
 	SHOW_BKG;
 	SHOW_SPRITES;
 	DISPLAY_ON;
-	
-	initrand(10);
 	
 	// tetramino (sprite)
 	set_sprite_tile(1,1);
@@ -506,12 +511,39 @@ void main(){
 	set_sprite_tile(11,1);
 	set_sprite_tile(12,1);
 	
+	initrand(DIV_REG);
+	
 	updateBoard();
 	while(1){
+		if (gaming == 2) {
+			set_bkg_data(0,104,tetri_logo_data);
+			set_bkg_tiles(0,0,20,18,tetri_logo_map);
+			if (joypad()){
+				gaming = 0;
+			}
+		}
+		if (gaming == 0) {
+			set_bkg_data(0,40,tetris);
+			set_bkg_tiles(0,0,20,18,tetris_menu);
+			if (joypad() == J_A) {
+				initrand(DIV_REG);
+				resetGame();
+				set_bkg_tiles(0,0,20,18,tetris_map);
+				if (addGarbage == 1) {
+					i = 0;
+					for (i = 0; i < 90; i+=1){
+						gameGrid[180 - i] = rand() % 2;
+						if (gameGrid[180 - i] !=1) {
+							gameGrid[180 - i] = 0;
+						}
+					}
+				}
+				updateBoard();
+				gaming = 1;
+			}
+		}
 		if (gaming == 1) {
-			
 			// previews
-			
 			move_sprite(5,(17-pxOffset1)*8,(5-pyOffset1+2)*8);
 			move_sprite(6,(17-pxOffset2)*8,(5-pyOffset2+2)*8);
 			move_sprite(7,(17-pxOffset3)*8,(5-pyOffset3+2)*8);
