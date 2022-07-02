@@ -7,6 +7,7 @@
 #include "tetris_map.c"
 #include "tetri_logo_data.c"
 #include "tetri_logo_map.c"
+#include "menu_tiles.c"
 
 int gaming = 2;
 
@@ -537,7 +538,7 @@ void main(){
 			set_bkg_tiles(0,0,20,18,tetri_logo_map);
 			if (joypad()){
 				gaming = 0;
-				move_sprite(13,6 * 8,10*8);
+				move_sprite(13,4 * 8,9*8);
 			}
 		}
 		if (gaming == 0) {
@@ -555,15 +556,15 @@ void main(){
 			move_sprite(11,-16,16);
 			move_sprite(12,-16,16);
 			
-			set_bkg_data(0,48,tetris);
+			set_bkg_data(0,64,menu_tiles);
 			set_bkg_tiles(0,0,20,18,tetris_menu);
-			if (joypad() == J_UP) {
+			if (joypad() == J_LEFT) {
 				selection = 0;
-				move_sprite(13,6 * 8,10*8);
+				move_sprite(13,4 * 8,9*8);
 			}
-			if (joypad() == J_DOWN) {
+			if (joypad() == J_RIGHT) {
 				selection = 1;
-				move_sprite(13,6 * 8,16*8);
+				move_sprite(13,16 * 8,9*8);
 			}
 			if (joypad() == J_A) {
 				initrand(DIV_REG);
