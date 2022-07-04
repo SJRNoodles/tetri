@@ -157,8 +157,7 @@ void updateHoldPiece(){
 }
 int r;
 void updateNext(){
-	//r = rand() % 8 + 1;
-	r = 3;
+	r = rand() % 8 + 1;
 	if (r == 1){
 		// j
 		pxOffset1 = 0;
