@@ -157,7 +157,8 @@ void updateHoldPiece(){
 }
 int r;
 void updateNext(){
-	r = rand() % 8 + 1;
+	//r = rand() % 8 + 1;
+	r = 3;
 	if (r == 1){
 		// j
 		pxOffset1 = 0;
@@ -463,8 +464,8 @@ void fixOverDrop(){
 	if ((ty-tyOffset1) > 17) {
 		if ((ty-tyOffset2) > 17) {
 			if ((ty-tyOffset3) > 17) {
-				if ((ty-tyOffset4) > 17) {
-					while((ty-tyOffset1) > 17 && (ty-tyOffset2) > 17 && (ty-tyOffset3) > 17 && (ty-tyOffset4) > 17){
+				if ((ty-tyOffset4) > 18) {
+					while((ty-tyOffset1) > 17 && (ty-tyOffset2) > 17 && (ty-tyOffset3) > 17 && (ty-tyOffset4) > 18){
 						ty-=1;
 					}
 				}
@@ -678,6 +679,11 @@ void main(){
 						NR12_REG = 0x63;  
 						NR13_REG = 0xFF;   
 						NR14_REG = 0xCC;
+						
+						NR41_REG = 0x05;
+						NR42_REG = 0xF1;
+						NR43_REG = 0x71;
+						NR44_REG = 0x80; 
 						hardDrop = 0;
 						break;
 					}
@@ -692,7 +698,12 @@ void main(){
 					NR11_REG = 0x80;
 					NR12_REG = 0x73;  
 					NR13_REG = 0xFF;   
-					NR14_REG = 0xFC;	   
+					NR14_REG = 0xFC;	 
+
+					NR41_REG = 0x1F;
+					NR42_REG = 0x51;
+					NR43_REG = 0x50;
+					NR44_REG = 0x80;  
 					reload = 8;
 					tDir += 1;
 					if (tDir == 2) {
@@ -785,11 +796,10 @@ void main(){
 						onGroundTick+=1;
 					}
 					if (onGroundTick>5) {
-						NR10_REG = 0xFF; 
-						NR11_REG = 0x80;
-						NR12_REG = 0x43;  
-						NR13_REG = 0xFF;   
-						NR14_REG = 0xCC;
+						NR41_REG = 0x05;
+						NR42_REG = 0xF1;
+						NR43_REG = 0x70;
+						NR44_REG = 0x80; 
 						onGroundTick=0;
 						collided();
 						shaking = 3;
